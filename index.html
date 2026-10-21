@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Folketidende Plus</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --surface: #1a1d24;
+      --surface-2: #242830;
+      --ink: #e8eaed;
+      --muted: #9aa0a6;
+      --line: #2e333c;
+      --accent: #c0392b;
+      --accent-hover: #e74c3c;
+      --max: 720px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 16px;
+    }
+
+    .brand {
+      max-width: var(--max);
+      margin: 0 auto;
+      font: 700 1rem/1.2 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.02em;
+    }
+
+    .brand span { color: var(--accent); }
+
+    .controls {
+      max-width: var(--max);
+      margin: 16px auto 12px;
+      padding: 0 14px;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="url"] {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      font: inherit;
+      outline: none;
+    }
+
+    input[type="url"]:focus {
+      border-color: var(--accent);
+    }
+
+    input[type="url"]::placeholder {
+      color: var(--muted);
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      background: var(--accent);
+      color: #fff;
+      font: 600 0.95rem/1.2 inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #status {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 8px;
+      min-height: 1.2em;
+      overflow-wrap: anywhere;
+    }
+
+    #status.error { color: #e74c3c; }
+
+    .article {
+      max-width: var(--max);
+      margin: 0 auto 24px;
+      padding: 20px 22px 28px;
+      background: var(--surface);
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+
+    .placeholder {
+      color: var(--muted);
+      text-align: center;
+      padding: 28px 10px;
+      font-size: 0.95rem;
+    }
+
+    .article h1 {
+      font: 700 clamp(1.5rem, 4.5vw, 2.1rem)/1.15 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.03em;
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      font: 1.05rem/1.35 Georgia, "Times New Roman", serif;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin: 0 0 16px;
+    }
+
+    .hero {
+      margin: 0 0 16px;
+    }
+
+    .hero img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .caption {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 5px;
+    }
+
+    .bodytext {
+      font: 1rem/1.55 Georgia, "Times New Roman", serif;
+      overflow-wrap: anywhere;
+    }
+
+    .bodytext p {
+      margin: 0 0 0.85em;
+    }
+
+    .bodytext h2,
+    .bodytext h3 {
+      font: 700 1.2rem/1.25 Georgia, "Times New Roman", serif;
+      margin: 1.2em 0 0.45em;
+    }
+
+    .bodytext blockquote,
+    .bodytext .quotebox {
+      border-left: 3px solid var(--accent);
+      margin: 1.1em 0;
+      padding: 4px 0 4px 14px;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: #d0d4d8;
+    }
+
+    .bodytext figure {
+      margin: 1.1em 0;
+    }
+
+    .bodytext figure img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 3px;
+    }
+
+    .bodytext figcaption {
+      color: var(--muted);
+      font: 0.82rem/1.4 system-ui, sans-serif;
+      margin-top: 4px;
+    }
+
+    .bodytext a {
+      color: #e74c3c;
+      text-decoration-thickness: 1px;
+    }
+
+    .bodytext table {
+      max-width: 100%;
+      border-collapse: collapse;
+      display: block;
+      overflow-x: auto;
+      margin: 1em 0;
+    }
+
+    .bodytext td,
+    .bodytext th {
+      border: 1px solid var(--line);
+      padding: 6px 8px;
+      font-size: 0.92rem;
+    }
+
+    .bodytext th {
+      background: var(--surface-2);
+    }
+
+    @media (max-width: 600px) {
+      .row { flex-direction: column; }
+      .row button { width: 100%; min-height: 44px; }
+      .article { padding: 16px 14px 22px; margin: 0 10px 20px; }
+      .bodytext { font-size: 0.98rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Folketidende <span>Plus</span></div>
+  </header>
+
+  <section class="controls" aria-label="Hent artikel">
+    <div class="row">
+      <input id="articleUrl" type="url" placeholder="https://www.folketidende.dk/plus/..." autocomplete="url">
+      <button id="loadButton" type="button">Hent</button>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <main id="article" class="article">
+    <div class="placeholder">Indsæt et plus-link ovenfor</div>
+  </main>
+
+  <script>
+    const urlInput = document.getElementById("articleUrl");
+    const loadButton = document.getElementById("loadButton");
+    const statusEl = document.getElementById("status");
+    const articleEl = document.getElementById("article");
+
+    function validateArticleUrl(value) {
+      let url;
+      try { url = new URL(value); }
+      catch { throw new Error("Indsæt et gyldigt artikel-link."); }
+      const allowedHosts = ["folketidende.dk", "www.folketidende.dk"];
+      if (url.protocol !== "https:" || !allowedHosts.includes(url.hostname) ||
+          !url.pathname.startsWith("/plus/")) {
+        throw new Error("Linket skal være HTTPS og pege på folketidende.dk/plus/.");
+      }
+      return url.href;
+    }
+
+    function removeUnsafeContent(root) {
+      root.querySelectorAll(
+        "script, iframe, object, embed, form, input, button, textarea, select, " +
+        "style, link, meta, base, noscript, .advertisement, .ad, [class*='advert']"
+      ).forEach(el => el.remove());
+      root.querySelectorAll("*").forEach(el => {
+        for (const attr of [...el.attributes]) {
+          const name = attr.name.toLowerCase();
+          const value = attr.value.trim().toLowerCase();
+          if (name.startsWith("on") || name === "srcdoc" || name === "style") {
+            el.removeAttribute(attr.name);
+          }
+          if (["href", "src", "xlink:href"].includes(name) &&
+              value.startsWith("javascript:")) {
+            el.removeAttribute(attr.name);
+          }
+        }
+      });
+      root.querySelectorAll("img[src], a[href], source[src]").forEach(el => {
+        const attr = el.tagName === "A" ? "href" : "src";
+        try {
+          const resolved = new URL(el.getAttribute(attr), window.__articleBase);
+          if (resolved.protocol === "https:" || resolved.protocol === "http:") {
+            el.setAttribute(attr, resolved.href);
+          } else {
+            el.removeAttribute(attr);
+          }
+        } catch {
+          el.removeAttribute(attr);
+        }
+      });
+    }
+
+    async function fetchThroughProxy(articleUrl) {
+      const encoded = encodeURIComponent(articleUrl);
+      const proxies = [
+        { name: "cors.dev", url: `https://proxy.cors.dev/raw?url=${encoded}` },
+        { name: "CodeTabs", url: `https://api.codetabs.com/v1/proxy?quest=${encoded}` }
+      ];
+      const errors = [];
+      for (const proxy of proxies) {
+        try {
+          statusEl.textContent = `Henter via en CORS-proxy…`;
+          const response = await fetch(proxy.url, {
+            method: "GET",
+            mode: "cors",
+            credentials: "omit",
+            signal: AbortSignal.timeout(18000)
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const html = await response.text();
+          if (!html || html.length < 500) throw new Error("Tomt eller ufuldstændigt svar.");
+          const doc = new DOMParser().parseFromString(html, "text/html");
+          const title = doc.querySelector(".articleHeader h1, article h1, main h1, h1");
+          const body = doc.querySelector(".bodytext.content-text") ||
+                       doc.querySelector("article .article-body") ||
+                       doc.querySelector("article") ||
+                       doc.querySelector("main");
+          if (!title || !body || body.textContent.trim().length < 100) {
+            throw new Error("Artikelindholdet blev ikke fundet.");
+          }
+          return { doc, title, body, proxyName: proxy.name };
+        } catch (err) {
+          errors.push(`${proxy.name}: ${err.message || "ukendt fejl"}`);
+          console.warn(`Proxy ${proxy.name} fejlede`, err);
+        }
+      }
+      throw new Error(
+        "Kunne ikke hente artiklen. " + errors.join(" · ") +
+        " (Login/abonnement kan blokere offentlige proxies.)"
+      );
+    }
+
+    function renderArticle(result, articleUrl) {
+      const { doc, title, body } = result;
+      articleEl.replaceChildren();
+
+      const heading = document.createElement("h1");
+      heading.textContent = title.textContent.trim();
+      articleEl.appendChild(heading);
+
+      const subtitleSource = doc.querySelector(".articleHeader .subtitle");
+      if (subtitleSource && subtitleSource.textContent.trim()) {
+        const subtitle = document.createElement("p");
+        subtitle.className = "subtitle";
+        subtitle.textContent = subtitleSource.textContent.trim();
+        articleEl.appendChild(subtitle);
+      }
+
+      const author = doc.querySelector('.articleHeader .bylines [itemprop="name"]')?.textContent.trim();
+      const date = doc.querySelector(".articleHeader time")?.textContent.trim();
+      if (author || date) {
+        const meta = document.createElement("p");
+        meta.className = "meta";
+        meta.textContent = [author, date].filter(Boolean).join(" · ");
+        articleEl.appendChild(meta);
+      }
+
+      const heroImg = doc.querySelector(".articleHeader .headerImage img");
+      const heroCaption = doc.querySelector(".articleHeader .caption figcaption");
+      if (heroImg) {
+        const figure = document.createElement("figure");
+        figure.className = "hero";
+        const img = document.createElement("img");
+        const rawSrc = heroImg.getAttribute("src") || heroImg.getAttribute("data-src");
+        if (rawSrc) {
+          try { img.src = new URL(rawSrc, articleUrl).href; } catch {}
+        }
+        img.alt = heroImg.getAttribute("alt") || "";
+        img.loading = "lazy";
+        figure.appendChild(img);
+        if (heroCaption && heroCaption.textContent.trim()) {
+          const cap = document.createElement("figcaption");
+          cap.className = "caption";
+          cap.textContent = heroCaption.textContent.trim();
+          figure.appendChild(cap);
+        }
+        articleEl.appendChild(figure);
+      }
+
+      const bodyCopy = body.cloneNode(true);
+      window.__articleBase = articleUrl;
+      removeUnsafeContent(bodyCopy);
+      bodyCopy.classList.add("bodytext");
+      articleEl.appendChild(bodyCopy);
+    }
+
+    async function loadArticle() {
+      let articleUrl;
+      try {
+        articleUrl = validateArticleUrl(urlInput.value.trim());
+      } catch (err) {
+        statusEl.className = "error";
+        statusEl.textContent = err.message;
+        return;
+      }
+
+      loadButton.disabled = true;
+      statusEl.className = "";
+      articleEl.replaceChildren();
+      const loading = document.createElement("p");
+      loading.className = "placeholder";
+      loading.textContent = "Henter…";
+      articleEl.appendChild(loading);
+
+      try {
+        const result = await fetchThroughProxy(articleUrl);
+        renderArticle(result, articleUrl);
+        statusEl.className = "";
+        statusEl.textContent = `Hentet via en CORS-proxy`;
+      } catch (err) {
+        articleEl.replaceChildren();
+        const message = document.createElement("p");
+        message.className = "placeholder";
+        message.textContent = err.message || "Ukendt fejl.";
+        articleEl.appendChild(message);
+        statusEl.className = "error";
+        statusEl.textContent = "Mislykkedes";
+      } finally {
+        loadButton.disabled = false;
+      }
+    }
+
+    loadButton.addEventListener("click", loadArticle);
+    urlInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") loadArticle();
+    });
+  </script>
+</body>
+</html>
