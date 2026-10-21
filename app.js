@@ -302,7 +302,7 @@ function renderArticle(doc, articleUrl) {
   interceptInternalLinks(bodyCopy);
 }
 
-async function loadArticle(urlOverride) {
+async function loadArticle(urlOverride, { pushHistory = true } = {}) {
   let articleUrl;
   try {
     articleUrl = validateArticleUrl(
@@ -330,6 +330,14 @@ async function loadArticle(urlOverride) {
     statusEl.className = "";
     statusEl.textContent = "";
     urlInput.value = articleUrl;
+
+    const titleText =
+      articleEl.querySelector("h1")?.textContent?.trim() || "Artikel";
+    document.title = titleText + " – Folketidende";
+
+    if (pushHistory) {
+      history.pushState({ view: "article", url: articleUrl }, "", "");
+    }
   } catch (err) {
     articleEl.replaceChildren();
     const message = document.createElement("p");
@@ -343,9 +351,10 @@ async function loadArticle(urlOverride) {
   }
 }
 
-async function loadLatest() {
+async function loadLatest({ pushHistory = true } = {}) {
   statusEl.className = "";
   statusEl.textContent = "";
+  urlInput.value = "";
   articleEl.replaceChildren();
   const loading = document.createElement("p");
   loading.className = "placeholder";
@@ -356,6 +365,13 @@ async function loadLatest() {
     const { html } = await fetchThroughProxy(BASE + "/");
     const items = parseLatestArticles(html);
     renderLatestList(items);
+    document.title = "Folketidende";
+
+    if (pushHistory) {
+      history.pushState({ view: "list" }, "", "");
+    } else {
+      history.replaceState({ view: "list" }, "", "");
+    }
   } catch (err) {
     articleEl.replaceChildren();
     const message = document.createElement("p");
@@ -366,17 +382,29 @@ async function loadLatest() {
   }
 }
 
+// History navigation (browser / phone back & forward)
+window.addEventListener("popstate", (event) => {
+  const state = event.state;
+  if (!state || state.view === "list") {
+    loadLatest({ pushHistory: false });
+  } else if (state.view === "article" && state.url) {
+    urlInput.value = state.url;
+    loadArticle(state.url, { pushHistory: false });
+  } else {
+    loadLatest({ pushHistory: false });
+  }
+});
+
 loadButton.addEventListener("click", () => loadArticle());
 urlInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") loadArticle();
 });
 homeLink.addEventListener("click", (e) => {
   e.preventDefault();
-  urlInput.value = "";
   statusEl.textContent = "";
   statusEl.className = "";
-  loadLatest();
+  loadLatest({ pushHistory: true });
 });
 
-// Initial load
-loadLatest();
+// Initial load – replaceState so the first entry is the list
+loadLatest({ pushHistory: false });
