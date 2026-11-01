@@ -14,11 +14,17 @@
     </div>
   </header>
 
-  <section class="controls" aria-label="Hent artikel">
-    <div class="row">
-      <input id="articleUrl" type="url" placeholder="https://www.folketidende.dk/..." autocomplete="url">
-      <button id="loadButton" type="button">Hent</button>
-    </div>
+  <section class="controls" aria-label="Søg eller hent artikel">
+    <form id="searchForm" class="search-form" action="#" method="get">
+      <input
+        id="queryInput"
+        type="search"
+        placeholder="Søg eller indsæt et link…"
+        autocomplete="off"
+        enterkeyhint="search"
+      >
+      <button id="goButton" type="submit">Find</button>
+    </form>
     <p id="status" role="status" aria-live="polite"></p>
   </section>
 
@@ -29,4 +35,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
