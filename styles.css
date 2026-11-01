@@ -47,42 +47,44 @@ body {
 
 .controls {
   max-width: var(--max);
-  margin: 16px auto 12px;
+  margin: 14px auto 10px;
   padding: 0 14px;
 }
 
-.row {
+.search-form {
   display: flex;
   gap: 8px;
+  align-items: stretch;
 }
 
-input[type="url"] {
+.search-form input {
   flex: 1;
   min-width: 0;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--surface);
   color: var(--ink);
   font: inherit;
+  font-size: 1rem;
   outline: none;
 }
 
-input[type="url"]:focus {
+.search-form input:focus {
   border-color: var(--accent);
 }
 
-input[type="url"]::placeholder {
+.search-form input::placeholder {
   color: var(--muted);
 }
 
 button {
   border: 0;
-  border-radius: 6px;
-  padding: 10px 14px;
+  border-radius: 8px;
+  padding: 12px 18px;
   background: var(--accent);
   color: #fff;
-  font: 600 0.95rem/1.2 inherit;
+  font: 600 1rem/1.2 inherit;
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.15s;
@@ -95,6 +97,18 @@ button:hover:not(:disabled) {
 button:disabled {
   opacity: 0.6;
   cursor: wait;
+}
+
+button.secondary {
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  font-size: 0.95rem;
+  padding: 10px 16px;
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--line);
 }
 
 #status {
@@ -125,13 +139,43 @@ button:disabled {
   font-size: 0.95rem;
 }
 
-/* Latest articles list */
-.latest-header {
-  font: 700 1.15rem/1.25 Georgia, "Times New Roman", serif;
-  margin: 0 0 14px;
+/* Tabs */
+.tabs-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+
+.tab-btn {
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 8px 14px;
+  font: 600 0.9rem/1.2 inherit;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.tab-btn:hover:not(:disabled) {
+  background: transparent;
   color: var(--ink);
 }
 
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.list-header {
+  font: 700 1rem/1.25 system-ui, sans-serif;
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+
+/* Latest / search list */
 .latest-list {
   list-style: none;
   display: flex;
@@ -181,6 +225,11 @@ button:disabled {
 .latest-time {
   color: var(--muted);
   font-size: 0.8rem;
+}
+
+.load-more-wrap {
+  margin-top: 14px;
+  text-align: center;
 }
 
 /* Article content */
@@ -290,13 +339,13 @@ button:disabled {
 }
 
 @media (max-width: 600px) {
-  .row {
+  .search-form {
     flex-direction: column;
   }
 
-  .row button {
+  .search-form button {
     width: 100%;
-    min-height: 44px;
+    min-height: 46px;
   }
 
   .article {
